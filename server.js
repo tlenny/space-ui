@@ -30,4 +30,4 @@ app.all("*", (req, res, next) => {
 });
 
 console.log('start port: ' + 6060)
-app.listen(6060)
+app.listen(6060, '0.0.0.0')
