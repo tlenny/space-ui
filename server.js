@@ -13,7 +13,7 @@ app.get('/',function(req, resp){
 })
 
 app.use('/q7', createProxyMiddleware({
-  target: 'http://127.0.0.1:8022/'
+  target: 'http://127.0.0.1:6061/'
 }));
-console.log('start port: ' + 8066)
-app.listen(8066)
+console.log('start port: ' + 6060)
+app.listen(6060)
