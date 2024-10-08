@@ -15,6 +15,9 @@ app.get('/',function(req, resp){
 app.use('/q7', createProxyMiddleware({
   target: 'http://127.0.0.1:6061/'
 }));
+app.use('/dict', createProxyMiddleware({
+  target: 'http://127.0.0.1:6061/'
+}));
 
 // app.all("*", (req, res, next) => {
 //   // 设置允许跨域的域名，*代表允许任意域名跨域

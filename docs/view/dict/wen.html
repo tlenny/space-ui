@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>释字</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .container h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .container p {
+            font-size: 18px;
+            color: #555;
+        }
+
+        .container h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .input-container {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            border: 2px solid #4a90e2;
+            border-radius: 25px;
+            overflow: hidden;
+            width: 400px;
+            background-color: #fff;
+        }
+
+        .input-container span {
+            background-color: #4a90e2;
+            color: #fff;
+            padding: 10px 15px;
+            font-size: 16px;
+            border-right: 1px solid #4a90e2;
+        }
+
+        .input-container input[type="text"] {
+            border: none;
+            outline: none;
+            padding: 10px;
+            font-size: 16px;
+            flex-grow: 1;
+            border-radius: 0 25px 25px 0;
+            color: #aaa;
+        }
+
+        .input-container input[type="text"]::placeholder {
+            color: #aaa;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="input-container">
+        <span>查字: </span>
+        <input type="text" placeholder="字" id="wd" name="wd">
+    </div>
+    <br>
+    
+    <!-- 
+    <div class="container">
+        <h2>文言文字典</h2>
+        <h3>zuò</h3>
+        <p>① &lt;动&gt; 坐。古人席地而坐，两膝着地，臀部靠在脚后跟上。《廉颇蔺相如列传》：“秦王坐章台见相如。”</p>
+        <p>② &lt;动&gt; 坐（在座位上）。《口技》：“口技人坐屏障，一桌一椅一扇一抚尺而已。”</p>
+        <p>③ &lt;名&gt; 座位。《鸿门宴》：“项王则受璧，置之坐上。”这个意义后来写作“座”。</p>
+        <p>④ &lt;动&gt; 犯罪；因……犯罪；犯……罪。《晏子使楚》：“王曰：‘何坐？’曰：‘坐盗。’”</p>
+        <p>⑤ &lt;动&gt; 奉法律治罪。《苏武传》：“副罪，当相坐。”</p>
+        <p>⑥ &lt;动&gt; 诉讼法时在诉官前对质。《左传·昭公二十三年》：“二国坐，郑伯如会。”</p>
+    </div> -->
+</body>
+<script>
+    $(document).ready(function () {
+        $('#wd').on('input', function () {
+            // 保留input-container 清空body
+            $('body div:not(:first)').remove();
+            
+            search();
+        });
+    });
+
+    function search() {
+        var wd = $('#wd').val();
+        // wd长度必须为1
+        if (wd.length !== 1) {
+            return;
+        }
+        var isChinese = /^[\u4e00-\u9fa5]+$/.test(wd);
+
+        if (isChinese) {
+            console.log("输入的是汉字");
+        } else {
+            console.log("输入的不是汉字");
+            return;
+        }
+        $.ajax({
+            url: "/dict/zi?wd=" + wd
+        }).done(function (data) {
+            for (var i = 0; i < data.length; i++) {
+                var zi = data[i];
+                var ziStr = '<div class="container"><h2>' + zi.title + '</h2>';
+                for (var j = 0; j < zi.content.length; j++) {
+                    ziStr += '<p>' + zi.content[j] + '</p>';
+                }
+                ziStr += '</div>';
+                $('body').append(ziStr);
+            }
+        });
+    }
+</script>
+
+</html>
