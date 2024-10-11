@@ -4,25 +4,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>释字</title>
-    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <title>字</title>
+    <!-- <script src="https://code.jquery.com/jquery-3.7.1.js"></script> -->
+    <script src="js/jquery.min.js"></script>
+    <!-- <script src="js/skel.min.js"></script> -->
+    <!-- <script src="js/util.js"></script> -->
+    <!-- <script src="js/main.js"></script> -->
+    <script src="js/su.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
-            background-color: #f5f5f5;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            background-color: rgba(214,225,194, 1.0);
-            background-image: 
+            height: 100%;
+            background-color: #113d72;
+            /* background-image: 
                 linear-gradient(to right, #6d7876 1px, transparent 1px),
-                linear-gradient(to bottom, #6d7876 1px, transparent 1px);
-            background-size: 50px 50px; /* 格子大小 */
+                linear-gradient(to bottom, #6d7876 1px, transparent 1px); */
+            background-size: 50px 50px;
+            /* 格子大小 */
         }
 
         .container {
-            max-width: 600px;
+            max-width: 480px;
             margin: 0 auto;
             background-color: white;
             border-radius: 8px;
@@ -56,7 +61,7 @@
             display: flex;
             align-items: center;
             border: 2px solid #4a90e2;
-            border-radius: 25px;
+            border-radius: 5px;
             overflow: hidden;
             width: 300px;
             background-color: #fff;
@@ -92,7 +97,8 @@
         <input type="text" placeholder="燚" id="wd" name="wd">
     </div>
     <br>
-    
+    <div id="bd" name="bd"></div>
+
     <!-- 
     <div class="container">
         <h2>文言文字典</h2>
@@ -106,29 +112,38 @@
     </div> -->
 </body>
 <script>
+    var _w;
     $(document).ready(function () {
+        $('body').wpSuperSnow({
+            flakes: ['images/007.png', 'images/006.png', 'images/004.png', 'images/002.png', 'images/001.png', 'images/003.png', 'images/002.png', 'images/001.png',],
+            totalFlakes: '90',
+            zIndex: '999999',
+            maxSize: '30',
+            maxDuration: '20',
+            useFlakeTrans: false
+        });
+
         $('#wd').on('input', function () {
-            // 保留input-container 清空body
-            $('body div:not(:first)').remove();
-            
-            search();
+            var wd = $('#wd').val();
+            // wd长度必须为1
+            if (wd.length !== 1) {
+                return;
+            }
+            var isChinese = /^[\u4e00-\u9fa5]+$/.test(wd);
+            if (!isChinese) {
+                return;
+            }
+
+            if (_w && _w == wd) {
+                return;
+            }
+            $('#bd div').remove();
+            search(wd);
+            _w = wd;
         });
     });
 
-    function search() {
-        var wd = $('#wd').val();
-        // wd长度必须为1
-        if (wd.length !== 1) {
-            return;
-        }
-        var isChinese = /^[\u4e00-\u9fa5]+$/.test(wd);
-
-        if (isChinese) {
-            console.log("输入的是汉字");
-        } else {
-            console.log("输入的不是汉字");
-            return;
-        }
+    function search(wd) {
         $.ajax({
             url: "/dict/zi?wd=" + wd
         }).done(function (data) {
@@ -139,7 +154,7 @@
                     ziStr += '<p>' + zi.content[j] + '</p>';
                 }
                 ziStr += '</div>';
-                $('body').append(ziStr);
+                $('#bd').append(ziStr);
             }
         });
     }
